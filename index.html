@@ -62,7 +62,7 @@
     </body>
     <script>
         // Globals
-        const DEBUG = false;
+        const DEBUG = true;
 
         backgroundLayer = document.getElementById("backgroundLayer");
         gameLayer0 = document.getElementById("gameLayer0");
@@ -220,14 +220,12 @@
             var self = this;
             if(this.alpha === this.maxAlpha && !this.waiting) {
                 this.waiting = true;
-                console.log('SETTING');
                 setTimeout(function() {
                     self.waiting = false;
                     self.hide();
                 }, this.lifespan);
             }
             else if(this.alpha === 0 && !this.waiting) {
-                console.log('SETTING TIMEOUT!');
                 this.waiting = true;
                 setTimeout(function() {
                     self.show();
@@ -433,53 +431,49 @@
             this.phi += 0.1;
         }
 
-        // instantiate object collections
+        var exclamationChoices = [
+                "Aua!",
+                "  Bitte nicht\nwegklicken!",
+                "Ich leg mich\n  wieder hin",
+                "    Erik ist der\nbessere Trader",
+                "    Ich glaub\nNICA ist down",
+                "Short ist Mord!",
+                "         Nicht die \nBlumen giessen!"
+            ];
 
         var creeps = [];
         var impacts = [];
         var moles = [];
-
-        var urs = new Creep(480, 200, 1000, 0.8);
-        urs.img = new Image();
-        urs.img.src = 'img/urs.png';
-        creeps.push(urs);
-
-        var martin = new Creep(780, 200, 2000, 1);
-        martin.img = new Image();
-        martin.img.src = 'img/martin.png';
-        creeps.push(martin);
-
-
-
-        var erik = new Mirko(0, CANVAS_HEIGHT);
-        erik.erik = true;
-        erik.retreat(false);
-
         var mirkos = [];
-        mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
-        mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
-        mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
-        mirkos.push(erik);
-        //mirkos.push(new Mirko(750, 450));
-
         var stars = {};
 
         var floatingTexts = [];
-        var exclamations = [];
 
-        var exclamationChoices = [
-            "Aua!",
-            "  Bitte nicht\nwegklicken!",
-            "Ich leg mich\n  wieder hin",
-            "    Erik ist der\nbessere Trader",
-            "    Ich glaub\nNICA ist down",
-            "Short ist Mord!",
-            "         Nicht die \nBlumen giessen!"
-        ];
+        // instantiate object collections
+        function init() {
+            var urs = new Creep(480, 200, 1000, 0.8);
+            urs.img = new Image();
+            urs.img.src = 'img/urs.png';
+            creeps.push(urs);
+
+            var martin = new Creep(780, 200, 2000, 1);
+            martin.img = new Image();
+            martin.img.src = 'img/martin.png';
+            creeps.push(martin);
 
 
-        for(mirko of mirkos) {
-            mirko.retreat();
+            var erik = new Mirko(0, CANVAS_HEIGHT);
+            erik.erik = true;
+            erik.retreat(false);
+
+            mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
+            mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
+            mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
+            mirkos.push(erik);
+
+            for (mirko of mirkos) {
+                mirko.retreat();
+            }
         }
 
         // Event listeners
@@ -488,14 +482,15 @@
             MOUSE_DOWN = true;
             let [impactX, impactY] = getImpactCoordinates(evt);
             impacts.push(new Impact(impactX, impactY));
-
             if(!RUNNING && isInRect(impactX, impactY,600, 300, 170, 200)) {
                 RUNNING = true;
                 return;
             }
             
             let hit = false;
+            console.log(impactX, impactY);
             for(mirko of mirkos) {
+                console.log(mirko.wasHit(impactX, impactY));
                 if(mirko.wasHit(impactX, impactY)) {
                     if(!mirko.erik) {
                         CURRENT_SERIES += 1;
@@ -505,10 +500,8 @@
                             BEST_SERIES = CURRENT_SERIES;
                         }
                         var rand = Math.random();
-                        console.log(rand);
                         if(rand <= EXCLAMATION_CHANCE) {
                             let x = Math.max(Math.min(mirko.x, CANVAS_WIDTH-100), 150);
-                            console.log(x);
                             floatingTexts.push(new Exclamation(x, mirko.y));
                         }
                         var scoreColor = "rgb(80, 244, 66)";
@@ -625,7 +618,6 @@
             if(DEBUG) {
                 ctx = uiLayerCtx;
                 ctx.save();
-                //let [hitAreaX, hitAreaY] = mirko.getHitAreaCoords();
                 ctx.translate(mirko.x-mirko.img.width/2, mirko.y-mirko.img.height/2);
                 ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
                 ctx.fillRect(0, 0, mirko.hitAreaWidth, mirko.hitAreaHeight);
@@ -824,6 +816,10 @@
             drawCursor();
             
         }
-        requestAnimationFrame(loop);
+
+        window.onload = function() {
+            init();
+            requestAnimationFrame(loop);
+        };
     </script>
 </html>
