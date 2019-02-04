@@ -29,6 +29,7 @@
             visibility: hidden;
         }
         </style>
+    <title>Whac-A-Mirko!</title>
     </head>
     <body>
     <img src="img/background.jpg">
@@ -90,7 +91,7 @@
 
         MOUSE_DOWN = false;
         
-
+        RUNNING = false;
         SCORE = 0;
         CURRENT_SERIES = 0;
         BEST_SERIES = 0;
@@ -104,6 +105,9 @@
         CURSOR_FLIP_SIGN = -1;
 
         CURSOR_STATE = 0;
+
+        LOGO = new Image();
+        LOGO.src = "img/logo.png";
 
         BACKGROUND_MASK_0 = new Image();
         BACKGROUND_MASK_0.src = "img/background_behind_mask.png"
@@ -482,6 +486,11 @@
             MOUSE_DOWN = true;
             let [impactX, impactY] = getImpactCoordinates(evt);
             impacts.push(new Impact(impactX, impactY));
+
+            if(!RUNNING && isInRect(impactX, impactY,600, 300, 170, 200)) {
+                RUNNING = true;
+                return;
+            }
             
             let hit = false;
             for(mirko of mirkos) {
@@ -724,84 +733,92 @@
             ctx.restore();
         }
 
+        function drawSplashScreen() {
+            let ctx = uiLayerCtx;
+            ctx.drawImage(LOGO, 100, 0);
+        }
+
         
         // Game loop
 
-        function loop(timestamp) {            
+        function loop(timestamp) {
+
             requestAnimationFrame(loop);
             gameLayer0Ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
             gameLayer1Ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
             uiLayerCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-            let ctx = uiLayerCtx;
-            let delIndices = [];
-            for(i = 0; i < impacts.length; i++) {
-                let impact = impacts[i];
-                let alpha = 1 - (timestamp - impact.timestamp)/IMPACT_LIFETIME;
-                if(alpha < 0) {
-                    delIndices.push(i);
-                    continue;
+            if(RUNNING) {
+                let ctx = uiLayerCtx;
+                let delIndices = [];
+                for(i = 0; i < impacts.length; i++) {
+                    let impact = impacts[i];
+                    let alpha = 1 - (timestamp - impact.timestamp)/IMPACT_LIFETIME;
+                    if(alpha < 0) {
+                        delIndices.push(i);
+                        continue;
+                    }
+                    drawImpact(impact, alpha);
                 }
-                drawImpact(impact, alpha);
-            }
 
-            for(i of delIndices) {
-                impacts.splice(i, 1);
-            }
-
-            delIndices = [];
-            for(i = 0; i < moles.length; i++) {
-                let mole = moles[i];
-                mole.update();
-                drawMole(mole);
-                if(mole.x > CANVAS_WIDTH + MOLE_IMG.width/2) {
-                    delIndices.push(i);
+                for(i of delIndices) {
+                    impacts.splice(i, 1);
                 }
-            }
-            for(i of delIndices) {
-                moles.splice(i, 1);
-            }
 
-            for(mirko of mirkos) {
-                if(mirko.up && mirko.getUptime() > MIRKO_UPTIME) {
-                    mirko.retreat(false);
-                    if(!mirko.erik) {
-                        CURRENT_SERIES = 0;
+                delIndices = [];
+                for(i = 0; i < moles.length; i++) {
+                    let mole = moles[i];
+                    mole.update();
+                    drawMole(mole);
+                    if(mole.x > CANVAS_WIDTH + MOLE_IMG.width/2) {
+                        delIndices.push(i);
                     }
                 }
-                mirko.update();
-                drawMirko(mirko);
-            }
-
-            for(var index in stars) {
-                let starGroup = stars[index];
-                for(star of starGroup) {
-                    star.update();
-                    drawStar(star);
+                for(i of delIndices) {
+                    moles.splice(i, 1);
                 }
-            }
-            drawScore();
 
-            delIndices = [];
-            for(i = 0; i < floatingTexts.length; i++) {
-                let text = floatingTexts[i];
-                text.update(timestamp);
-                if(text.alpha < 0) {
-                    delIndices.push(i);
-                    continue;
+                for(mirko of mirkos) {
+                    if(mirko.up && mirko.getUptime() > MIRKO_UPTIME) {
+                        mirko.retreat(false);
+                        if(!mirko.erik) {
+                            CURRENT_SERIES = 0;
+                        }
+                    }
+                    mirko.update();
+                    drawMirko(mirko);
                 }
-                drawFloatingText(text);
-            }
-            for(i of delIndices) {
-                floatingTexts.splice(i, 1);
-            }
 
-            for(var creep of creeps) {
-                creep.update(timestamp);
-                drawCreep(creep);
+                for(var index in stars) {
+                    let starGroup = stars[index];
+                    for(star of starGroup) {
+                        star.update();
+                        drawStar(star);
+                    }
+                }
+                drawScore();
+
+                delIndices = [];
+                for(i = 0; i < floatingTexts.length; i++) {
+                    let text = floatingTexts[i];
+                    text.update(timestamp);
+                    if(text.alpha < 0) {
+                        delIndices.push(i);
+                        continue;
+                    }
+                    drawFloatingText(text);
+                }
+                for(i of delIndices) {
+                    floatingTexts.splice(i, 1);
+                }
+
+                for(var creep of creeps) {
+                    creep.update(timestamp);
+                    drawCreep(creep);
+                }
+
+            } else {
+                drawSplashScreen();
             }
-
-
             drawCursor();
             
         }
