@@ -14,8 +14,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
-              <caret line="454" column="31" lean-forward="false" selection-start-line="454" selection-start-column="31" selection-end-line="454" selection-end-column="31" />
+            <state relative-caret-position="493">
+              <caret line="134" column="76" lean-forward="false" selection-start-line="134" selection-start-column="76" selection-end-line="134" selection-end-column="76" />
               <folding />
             </state>
           </provider>
@@ -26,6 +26,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>new mirko</find>
+      <find>script</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -156,8 +157,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="454" column="31" lean-forward="false" selection-start-line="454" selection-start-column="31" selection-end-line="454" selection-end-column="31" />
+        <state relative-caret-position="493">
+          <caret line="134" column="76" lean-forward="false" selection-start-line="134" selection-start-column="76" selection-end-line="134" selection-end-column="76" />
           <folding />
         </state>
       </provider>

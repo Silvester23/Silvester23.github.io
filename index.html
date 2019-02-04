@@ -15,6 +15,7 @@
             position: relative;
             width: 1000;
             height: 600px;
+            visibility:hidden;
         }
 
         .wrapper canvas {
@@ -46,7 +47,7 @@
     <img src="img/urs.png">
     <img src="img/hammer.png">
     <img src="img/mole.png">
-            <div class="wrapper">
+            <div class="wrapper" id="wrapper">
                     <canvas id="backgroundLayer" width="1000" height="600"></canvas>
                     <canvas id="gameLayer0" width="1000" height="600"></canvas>
                     <canvas id="maskLayer0" width="1000" height="600"></canvas>
@@ -130,7 +131,8 @@
             ctx.drawImage(BACKGROUND_MASK_1, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
             ctx.globalCompositeOperation = "source-in";
             ctx.drawImage(BACKGROUND_IMG, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            ctx.restore(); 
+            ctx.restore();
+            document.getElementById("wrapper").style.visibility = "inherit";
         }
 
 
