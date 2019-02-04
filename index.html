@@ -8,7 +8,7 @@
         
         #hiddenCanvas {
             display: none;
-            visibility: none;
+            visibility: hidden;
         }
         
         .wrapper {
@@ -22,9 +22,30 @@
             top: 0;
             left: 0;
         }
+
+        img {
+            display:none;
+            visibility: hidden;
+        }
         </style>
     </head>
     <body>
+    <img src="img/background.jpg">
+    <img src="img/background_behind_mask.png">
+    <img src="img/background_positive.png">
+    <img src="img/crack_2.png">
+    <img src="img/erik.png">
+    <img src="img/erik_hit.png">
+    <img src="img/mirko_1.png">
+    <img src="img/mirko_2.png">
+    <img src="img/mirko_3.png">
+    <img src="img/mirko_1_hit.png">
+    <img src="img/mirko_2_hit.png">
+    <img src="img/mirko_3_hit.png">
+    <img src="img/martin.png">
+    <img src="img/urs.png">
+    <img src="img/hammer.png">
+    <img src="img/mole.png">
             <div class="wrapper">
                     <canvas id="backgroundLayer" width="1000" height="600"></canvas>
                     <canvas id="gameLayer0" width="1000" height="600"></canvas>
@@ -429,9 +450,9 @@
         erik.retreat(false);
 
         var mirkos = [];
-        mirkos.push(new Mirko(750, 250));
-        mirkos.push(new Mirko(750, 450));
-        mirkos.push(new Mirko(750, 450));
+        mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
+        mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
+        mirkos.push(new Mirko(-750, CANVAS_HEIGHT));
         mirkos.push(erik);
         //mirkos.push(new Mirko(750, 450));
 
